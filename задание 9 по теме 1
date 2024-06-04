@@ -1,0 +1,103 @@
+№1
+#include <iostream>
+#include <complex>
+
+using namespace std;
+
+int main() {
+  // Определение комплексных чисел
+  complex<double> z1(-1, 1.2);
+  complex<double> z2(-3, -1);
+
+  // Сложение
+  complex<double> сумма = z1 + z2;
+  cout << "Сумма: " << сумма << endl;
+
+  // Разность
+  complex<double> разница = z1 - z2;
+  cout << "Разница: " << разница << endl;
+
+  // Произведение
+  complex<double> произведение = z1 * z2;
+  cout << "Произведение: " << произведение << endl;
+
+  // Деление
+  complex<double> частное = z1 / z2;
+  double модуль = abs(частное);
+  double аргумент = atan2(частное.imag(), частное.real());
+  complex<double> результат = polar(модуль, аргумент);
+  cout << "Частное: " << результат << endl;
+
+  return 0;
+}
+
+
+№2
+import math
+import numpy as np
+
+def func(x):
+  return math.exp(-x) - math.sqrt(x) - 1
+
+def is_monotonic(a, b):
+  if func(a) * func(b) > 0:
+    return False
+  return True
+
+def dichotomic_search(a, b, eps):
+  while abs(b - a) > eps:
+    x_mid = (a + b) / 2
+    if func(x_mid) > 0:
+      b = x_mid
+    else:
+      a = x_mid
+  return (a + b) / 2
+
+def iteration_method(x0, eps):
+  x_next = x0
+  while abs(func(x_next)) > eps:
+    x_next = x_next - func(x_next) / func_derivative(x_next)
+  return x_next
+
+def chord_method(x0, x1, eps):
+  x_next = x1
+  while abs(func(x_next)) > eps:
+    x_next = x1 - (func(x1) * (x1 - x0)) / (func(x1) - func(x0))
+    x0 = x1
+    x1 = x_next
+  return x_next
+
+def newton_method(x0, eps):
+  x_next = x0
+  while abs(func(x_next)) > eps:
+    x_next = x_next - func(x_next) / func_derivative(x_next)
+  return x_next
+
+def func_derivative(x):
+  return -math.exp(-x) - 0.5 / math.sqrt(x)
+
+if __name__ == "__main__":
+  eps = 1e-6  # Заданная точность
+  a = 0  # Левая граница
+  b = 2  # Правая граница
+
+  # Проверка однозначности на заданном интервале
+  if not is_monotonic(a, b):
+    print("Уравнение не является монотонным на заданном интервале.")
+    exit(1)
+
+  # Поиск корня методом дихотомии
+  root_dichotomy = dichotomic_search(a, b, eps)
+  print(f"Корень, найденный методом дихотомии: {root_dichotomy}")
+
+  # Поиск корня методом итераций
+  root_iteration = iteration_method(a, eps)
+  print(f"Корень, найденный методом итераций: {root_iteration}")
+
+  # Поиск корня методом хорд
+  root_chord = chord_method(a, b, eps)
+  print(f"Корень, найденный методом хорд: {root_chord}")
+
+  # Поиск корня методом Ньютона
+  root_newton = newton_method(a, eps)
+  print(f"Корень, найденный методом Ньютона: {root_newton}")
