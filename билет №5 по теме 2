@@ -1,0 +1,350 @@
+№1 (C++)
+#include <iostream>
+#include <cmath>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+// Структура для представления вектора на плоскости
+struct Vector2D {
+  double x;
+  double y;
+};
+
+// Функция для вычисления длины вектора
+double vector_length(const Vector2D& v) {
+  return sqrt(v.x * v.x + v.y * v.y);
+}
+
+// Функция для вычисления угла между двумя векторами
+double angle_between_vectors(const Vector2D& v1, const Vector2D& v2) {
+  double cos_theta = (v1.x * v2.x + v1.y * v2.y) / (vector_length(v1) * vector_length(v2));
+  return acos(cos_theta) * 180 / M_PI; // Перевод в градусы
+}
+
+// Функция для сложения векторов
+Vector2D vector_sum(const Vector2D& v1, const Vector2D& v2) {
+  return {v1.x + v2.x, v1.y + v2.y};
+}
+
+// Функция для вычитания векторов
+Vector2D vector_difference(const Vector2D& v1, const Vector2D& v2) {
+  return {v1.x - v2.x, v1.y - v2.y};
+}
+
+// Функция для проверки параллельности векторов
+bool are_vectors_parallel(const Vector2D& v1, const Vector2D& v2) {
+  return fabs(angle_between_vectors(v1, v2) - 0) < 1e-6 || fabs(angle_between_vectors(v1, v2) - 180) < 1e-6;
+}
+
+int main() {
+  // Генерация случайных координат для трех векторов
+  srand(time(NULL));
+  vector<Vector2D> vectors(3);
+  for (Vector2D& v : vectors) {
+    v.x = rand() % 100 - 50;
+    v.y = rand() % 100 - 50;
+  }
+
+  // Вывод информации о каждом векторе
+  for (int i = 0; i < vectors.size(); ++i) {
+    cout << "Вектор " << i + 1 << ": (" << vectors[i].x << ", " << vectors[i].y << ")" << endl;
+    cout << "Длина: " << vector_length(vectors[i]) << endl;
+  }
+
+  // Вывод углов между попарными векторами
+  for (int i = 0; i < vectors.size(); ++i) {
+    for (int j = i + 1; j < vectors.size(); ++j) {
+      cout << "Угол между векторами " << i + 1 << " и " << j + 1 << ": " << angle_between_vectors(vectors[i], vectors[j]) << "°" << endl;
+    }
+  }
+
+  // Вывод суммы и разности попарных векторов
+  for (int i = 0; i < vectors.size(); ++i) {
+    for (int j = i + 1; j < vectors.size(); ++j) {
+      cout << "Сумма векторов " << i + 1 << " и " << j + 1 << ": (" << vector_sum(vectors[i], vectors[j]).x << ", " << vector_sum(vectors[i], vectors[j]).y << ")" << endl;
+      cout << "Разность векторов " << i + 1 << " и " << j + 1 << ": (" << vector_difference(vectors[i], vectors[j]).x << ", " << vector_difference(vectors[i], vectors[j]).y << ")" << endl;
+    }
+  }
+
+  // Проверка параллельности векторов
+  for (int i = 0; i < vectors.size(); ++i) {
+    for (int j = i + 1; j < vectors.size(); ++j) {
+      if (are_vectors_parallel(vectors[i], vectors[j])) {
+        cout << "Векторы " << i + 1 << " и " << j + 1 << "
+
+№2(c++)
+#include <iostream>
+#include <cmath>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+// Структура для представления вектора в пространстве
+struct Vector3D {
+  double x;
+  double y;
+  double z;
+};
+
+// Функция для вычисления длины вектора
+double vector_length(const Vector3D& v) {
+  return sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+}
+
+// Функция для вычисления скалярного произведения векторов
+double scalar_product(const Vector3D& v1, const Vector3D& v2) {
+  return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+}
+
+// Функция для вычисления угла между векторами
+double angle_between_vectors(const Vector3D& v1, const Vector3D& v2) {
+  double cos_theta = scalar_product(v1, v2) / (vector_length(v1) * vector_length(v2));
+  return acos(cos_theta) * 180 / M_PI; // Перевод в градусы
+}
+
+// Функция для сложения векторов
+Vector3D vector_sum(const Vector3D& v1, const Vector3D& v2) {
+  return {v1.x + v2.x, v1.y + v2.y, v1.z + v2.z};
+}
+
+// Функция для вычитания векторов
+Vector3D vector_difference(const Vector3D& v1, const Vector3D& v2) {
+  return {v1.x - v2.x, v1.y - v2.y, v1.z - v2.z};
+}
+
+// Функция для проверки коллинеарности векторов
+bool are_vectors_collinear(const Vector3D& v1, const Vector3D& v2, const Vector3D& v3) {
+  return scalar_product(v1, vector_difference(v2, v3)) == 0;
+}
+
+// Функция для проверки, лежат ли векторы в одной плоскости
+bool are_vectors_in_plane(const Vector3D& v1, const Vector3D& v2, const Vector3D& v3) {
+  return are_vectors_collinear(v1, vector_difference(v2, v3), vector_difference(v3, v1));
+}
+
+// Функция для проверки параллельности векторов
+bool are_vectors_parallel(const Vector3D& v1, const Vector3D& v2) {
+  return scalar_product(v1, v2) == 0;
+}
+
+int main() {
+  // Генерация случайных координат для трех векторов
+  srand(time(NULL));
+  vector<Vector3D> vectors(3);
+  for (Vector3D& v : vectors) {
+    v.x = rand() % 100 - 50;
+    v.y = rand() % 100 - 50;
+    v.z = rand() % 100 - 50;
+  }
+
+  // Вывод информации о каждом векторе
+  for (int i = 0; i < vectors.size(); ++i) {
+    cout << "Вектор " << i + 1 << ": (" << vectors[i].x << ", " << vectors[i].y << ", " << vectors[i].z << ")" << endl;
+    cout << "Длина: " << vector_length(vectors[i]) << endl;
+  }
+
+  // Вывод углов между попарными векторами
+  for (int i = 0; i < vectors.size(); ++i) {
+    for (int j = i + 1; j < vectors.size(); ++j) {
+      cout << "Угол между векторами " << i + 1 << " и " << j + 1 << ": " << angle_between_vectors(vectors[i], vectors[j]) << "°" << endl;
+    }
+  }
+
+  // Вывод суммы и разности попарных векторов
+  for (int i = 0; i < vectors.size(); ++i) {
+    for (int j = i +
+
+№3(Python)
+import math
+import cmath
+
+def is_point_on_hyperbola(a, b, c, x, y):
+  """
+  Проверяет, принадлежит ли точка (x, y) гиперболе с параметрами a, b, c.
+
+  Args:
+      a: Параметр гиперболы.
+      b: Параметр гиперболы.
+      c: Параметр гиперболы.
+      x: Координата x точки.
+      y: Координата y точки.
+
+  Returns:
+      True, если точка принадлежит гиперболе, False - в противном случае.
+  """
+  return abs(a * (x ** 2) - b * (y ** 2) + c) < 1e-6
+
+def find_foci(a, b, c):
+  """
+  Находит координаты фокусов гиперболы.
+
+  Args:
+      a: Параметр гиперболы.
+      b: Параметр гиперболы.
+      c: Параметр гиперболы.
+
+  Returns:
+      Кортеж из двух комплексных чисел, представляющих координаты фокусов.
+  """
+  f1 = cmath.sqrt(b + c)
+  f2 = -cmath.sqrt(b + c)
+  return (f1, f2)
+
+def find_semi_axes(a, b, c):
+  """
+  Находит длины действительной и мнимой полуосей гиперболы.
+
+  Args:
+      a: Параметр гиперболы.
+      b: Параметр гиперболы.
+      c: Параметр гиперболы.
+
+  Returns:
+      Кортеж из двух чисел, представляющих длины действительной и мнимой полуосей.
+  """
+  semi_axis_a = cmath.sqrt(a)
+  semi_axis_b = cmath.sqrt(b)
+  return (semi_axis_a, semi_axis_b)
+
+def find_eccentricity(a, b, c):
+  """
+  Находит эксцентриситет гиперболы.
+
+  Args:
+      a: Параметр гиперболы.
+      b: Параметр гиперболы.
+      c: Параметр гиперболы.
+
+  Returns:
+      Эксцентриситет гиперболы.
+  """
+  if b == 0:
+    return float("inf")
+  else:
+    return cmath.sqrt(a / b)
+
+def find_directrix_distance(a, b, c):
+  """
+  Находит расстояние между директрисами гиперболы.
+
+  Args:
+      a: Параметр гиперболы.
+      b: Параметр гиперболы.
+      c: Параметр гиперболы.
+
+  Returns:
+      Расстояние между директрисами.
+  """
+  if b == 0:
+    return float("inf")
+  else:
+    return 2 * cmath.sqrt(a / b)
+
+# Генерация случайных параметров гиперболы и координаты точки
+a = random.randint(1, 10)
+b = random.randint(1, 10)
+c = random.randint(1, 10)
+x = random.randint(-10, 10)
+y = random.randint(-10, 10)
+
+# Проверка принадлежности точки гиперболе
+if is_point_on_hyperbola(a, b, c, x, y):
+  print(f"Точка ({x}, {y}) принадлежит гиперболе.")
+else:
+  print(f"Точка ({x}, {y}) не принадлежит гиперболе.")
+
+# Поиск координат фокусов
+f1, f2 = find_foci(a, b, c)
+print(f"Координаты фокуса F1: {f1}")
+print(f"Координаты фокуса F2: {f2}")
+
+# Поиск длин действительной и мнимой полуосей
+semi_axis_a, semi_axis_b = find_semi_axes(a, b, c)
+print(f"Длина действительной полуоси: {semi_axis_a}")
+print(f"Длина мнимой полуоси: {semi_axis_b}")
+
+# Поиск эксцентриситета
+eccentricity = find_eccentricity(a, b, c)
+print(f"Эксцентриситет: {eccentricity}")
+
+
+№4(Python)
+import math
+import numpy as np
+
+def is_point_on_hyperboloid(a, b, c, x, y, z):
+  """
+  Проверяет, принадлежит ли точка (x, y, z) однополостному гиперболоиду.
+
+  Args:
+      a: Параметр гиперболоида.
+      b: Параметр гиперболоида.
+      c: Параметр гиперболоида.
+      x: Координата x точки.
+      y: Координата y точки.
+      z: Координата z точки.
+
+  Returns:
+      True, если точка принадлежит гиперболоиду, False - в противном случае.
+  """
+  return (x ** 2) / a ** 2 - (y ** 2) / b ** 2 - z ** 2 / c ** 2 == 1
+
+def is_plane_intersecting_hyperboloid(a, b, c, n, d):
+  """
+  Проверяет, пересекает ли плоскость с нормалью n и расстоянием до начала координат d однополостный гиперболоид.
+
+  Args:
+      a: Параметр гиперболоида.
+      b: Параметр гиперболоида.
+      c: Параметр гиперболоида.
+      n: Вектор нормали плоскости.
+      d: Расстояние от начала координат до плоскости.
+
+  Returns:
+      True, если плоскость пересекает гиперболоид, False - в противном случае.
+  """
+  A = np.array([[1 / a ** 2, 0, 0], [0, -1 / b ** 2, 0], [0, 0, -1 / c ** 2]])
+  b = np.array([-d / a, d / b, d / c])
+  x = np.linalg.solve(A, b)
+  return np.linalg.norm(x) < 1
+
+def is_line_intersecting_hyperboloid(a, b, c, direction, point):
+  """
+  Проверяет, пересекает ли прямая с направлением direction и проходящая через точку point однополостный гиперболоид.
+
+  Args:
+      a: Параметр гиперболоида.
+      b: Параметр гиперболоида.
+      c: Параметр гиперболоида.
+      direction: Вектор направления прямой.
+      point: Координаты точки, через которую проходит прямая.
+
+  Returns:
+      True, если прямая пересекает гиперболоид, False - в противном случае.
+  """
+  A = np.array([[1 / a ** 2, 0, 0], [0, -1 / b ** 2, 0], [0, 0, -1 / c ** 2]])
+  b = np.array([point[0] / a ** 2, point[1] / b ** 2, point[2] / c ** 2])
+  t = np.linalg.solve(A, b - direction)
+  return np.min(t) >= 0 and np.max(t) <= 1
+
+# Генерация случайных параметров гиперболоида, плоскости, прямой и координаты точки
+a = random.randint(1, 10)
+b = random.randint(1, 10)
+c = random.randint(1, 10)
+n = np.array([random.random(), random.random(), random.random()])
+d = random.random() * 10
+direction = np.array([random.random(), random.random(), random.random()])
+point = np.array([random.random() * 10, random.random() * 10, random.random() * 10])
+x = random.random() * 10
+y = random.random() * 10
+z = random.random() * 10
+
+# Проверка принадлежности точки гиперболоиду
+if is_point_on_hyperboloid(a, b, c, x, y, z):
+  print(f"Точка ({x}, {y}, {z}) принадлежит однополостному гиперболоиду.")
+else:
+  print(f"Точка ({x}, {y}, {z}) не принадлежит однополостному гиперболоиду.")
+
