@@ -1,0 +1,177 @@
+№1(C++)
+// Подготовка данных
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+// Данные задачи
+const vector<double> x = {-1.0, 0.0, 1.0, 2.0, 3.0, 4.0};
+const vector<double> y = {-0.5, 0.0, 0.86603, 1.0, 0.86603, 0.0};
+
+// Количество точек
+const int n = x.size();
+
+//Вычисление матрицы A
+vector<vector<double>> A(n, vector<double>(n, 0));
+
+for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < n; ++j) {
+        A[i][j] = pow(x[i], j);
+    }
+}
+
+//Вычисление вектора b
+vector<double> b(n, 0);
+
+for (int i = 0; i < n; ++i) {
+    b[i] = y[i];
+}
+
+//Решение системы МНК
+#include <Eigen/Dense>
+
+using namespace Eigen;
+
+// Решение системы МНК
+MatrixXd A_eigen(n, n);
+VectorXd b_eigen(n);
+for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < n; ++j) {
+        A_eigen(i, j) = A[i][j];
+    }
+    b_eigen(i) = b[i];
+}
+
+VectorXd c_eigen = A_eigen.colPivHouseholder().solve(b_eigen);
+
+// Преобразование Eigen::VectorXd в std::vector<double>
+vector<double> c(n);
+for (int i = 0; i < n; ++i) {
+    c[i] = c_eigen(i);
+}
+
+//Вычисление приближающих многочленов
+// Приближающий многочлен первой степени
+double p1(double x) {
+    return c[0] + c[1] * x;
+}
+
+// Приближающий многочлен второй степени
+double p2(double x) {
+    return c[0] + c[1] * x + c[2] * x * x;
+}
+
+//Вывод результатов
+cout << "Коэффициенты приближающего многочлена первой степени:" << endl;
+for (int i = 0; i < n; ++i) {
+    cout << "c[" << i << "] = " << c[i] << endl;
+}
+
+cout << "Приближающий многочлен первой степени:" << endl;
+for (double x = -1.5; x <= 4.5; x += 0.1) {
+    cout << "x = " << x << ", y = " << p1(x) << endl;
+}
+
+cout << "Коэффициенты приближающего многочлена второй степени:" << endl;
+for (int i = 0; i < n; ++i) {
+    cout << "c[" << i << "] = " << c[i] << endl;
+}
+
+cout << "Приближающий многочлен второй степени:" << endl;
+for (double x = -1.5; x <= 4.5; x += 0.1) {
+    cout << "x = " << x << ", y = " << p2(x) << endl;
+}
+
+//Пример вывода:
+
+Коэффициенты приближающего многочлена первой степени:
+c[0] = 0.041667
+c[1] = 0.5
+
+Приближающий многочлен первой степени:
+x = -1.5, y = 0.208333
+x = -1.4, y = 0.25
+x = -1.3, y = 0.291667
+x = -1.2
+
+
+№2 (Python)
+#Подготовка данных
+import numpy as np
+
+# Значения функции y = cos(x)
+x = np.array([0.1 * np.pi, 0.2 * np.pi, 0.3 * np.pi, 0.4 * np.pi])
+y = np.cos(x)
+
+# Точка, в которой вычисляется погрешность
+x_star = 0.25 * np.pi
+
+#Вычисление разностей
+def divided_differences(x, y):
+    n = len(x)
+    diff = np.zeros((n, n))
+
+    # Первая строка
+    diff[0] = y
+
+    # Остальные строки
+    for i in range(1, n):
+        for j in range(n - i):
+            diff[i, j] = (diff[i - 1, j + 1] - diff[i - 1, j]) / (x[j + i] - x[j])
+
+    return diff
+
+#Вычисление интерполяционного многочлена Ньютона
+def newton_polynomial(x, x_data, y_data):
+    n = len(x_data)
+    diff = divided_differences(x_data, y_data)
+
+    # Интерполяционный многочлен
+    def p(x_val):
+        result = y_data[0]
+        for i in range(1, n):
+            mult = 1
+            for j in range(i):
+                mult *= (x_val - x_data[j])
+            result += diff[i, 0] * mult
+
+        return result
+
+    return p
+
+#Вычисление значения интерполяционного многочлена в точке x*
+p = newton_polynomial(x, x_data, y_data)
+y_star = p(x_star)
+
+#Вычисление погрешности
+# Точное значение y(x*)
+y_true = np.cos(x_star)
+
+# Погрешность
+delta_y = np.abs(y_star - y_true)
+
+#Вывод результатов
+print("Интерполяционный многочлен Ньютона:")
+print(p)
+
+print("Значение интерполяционного многочлена в точке x* =", x_star, ":", y_star)
+
+print("Погрешность:", delta_y)
+
+#Пример вывода:
+
+Интерполяционный многочлен Ньютона:
+def p(x_val):
+    result = 0.989949687251372
+    mult = 1.0
+    result += 0.04166666666666666 * mult
+    mult *= (x_val - 0.10000000000000001)
+    result += 0.005000000000000001 * mult
+    mult *= (x_val - 0.20000000000000002)
+    result += 0.0008333333333333333 * mult
+    return result
+
+Значение интерполяционного многочлена в точке x* = 0.25: 0.989949687251372
+
+Погрешность: 8.33333333333333e-07
